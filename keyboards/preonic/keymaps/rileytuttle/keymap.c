@@ -25,7 +25,6 @@ enum preonic_layers {
   _LOWER2,
   _RAISE2,
   _ADJUST,
-  _ADJUST2
 };
 
 enum preonic_keycodes {
@@ -229,7 +228,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (record->event.pressed) {
             layer_on(_LOWER2);
           } else {
-            layer_off(_LOWER);
+            layer_off(_LOWER2);
           }
           return false;
           break;
