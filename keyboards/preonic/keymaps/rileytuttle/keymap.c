@@ -188,28 +188,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
 ),
 
-/* Adjust2
- * ,-----------------------------------------------------------------------------------.
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * `-----------------------------------------------------------------------------------'
- */
-[_ADJUST2] = LAYOUT_preonic_grid( \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
-)
-
-
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -236,16 +214,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           return false;
           break;
-        case LOWER2:
-          if (record->event.pressed) {
-            layer_on(_LOWER2);
-            update_tri_layer(_LOWER2, _RAISE2, _ADJUST2);
-          } else {
-            layer_off(_LOWER);
-            update_tri_layer(_LOWER2, _RAISE2, _ADJUST2);
-          }
-          return false;
-          break;
         case RAISE:
           if (record->event.pressed) {
             layer_on(_RAISE);
@@ -256,13 +224,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           return false;
           break;
+        case LOWER2:
+          if (record->event.pressed) {
+            layer_on(_LOWER2);
+          } else {
+            layer_off(_LOWER);
+          }
+          return false;
+          break;
         case RAISE2:
           if (record->event.pressed) {
             layer_on(_RAISE2);
-            update_tri_layer(_LOWER2, _RAISE2, _ADJUST2);
           } else {
             layer_off(_RAISE2);
-            update_tri_layer(_LOWER2, _RAISE2, _ADJUST2);
           }
           return false;
           break;
