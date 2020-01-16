@@ -8,9 +8,7 @@
 layers=$(grep "^\s*_\S*,$" keymap.c | sed 's/_\(.*\),/\1/')
 if [ $# -eq 0 ]; then 
     for layer in $layers; do
-        # sed -n "/\/\* $layer/,/\*\//p" "$KEYMAP_FILE"
-        sed -n "/\/\* $layer$/,/\*\/$/p" keymap.c
-        # awk "/\/\* $layer/,/\*\//p" keymap.c
+        echo $layer
     done    
 else
     layer=$1
