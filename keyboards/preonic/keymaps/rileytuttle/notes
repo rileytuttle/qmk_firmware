@@ -1,0 +1,19 @@
+things needed to start up i2c connection with bluetooth dev board
+
+using MICRO_OLED as an example
+inside rules.mk file add something that looks like:
+QWIIC_ENABLE += MICRO_OLED
+
+inside qwiic.h we need to add an entry
+#ifdef QWIIC_MICRO_OLED_ENABLE
+#   include "micro_led.h"
+#endif
+
+inside qwiic.c init function add
+#ifdef QWIIC_MICRO_OLED_ENABLE
+    micro_oled_init();
+#endif
+from there add functions to init the bluetooth and do whatever with it
+for starters just communicate with the board
+then figure out how to connect the board to a bluetooth master (ie. the computer)
+then configure the board as a usb device and then set up as passthrough
