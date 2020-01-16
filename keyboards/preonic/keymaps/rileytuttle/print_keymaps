@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# making a script to grep through the code to print out keymaps
+
+# KEMAP_FILE="keymap.c"
+
+# layers=$(grep "^\s*_\S*,$" "$KEYMAP_FILE" | sed 's/_\(.*\),/\1/')
+layers=$(grep "^\s*_\S*,$" keymap.c | sed 's/_\(.*\),/\1/')
+if [ $# -eq 0 ]; then 
+    for layer in $layers; do
+        # sed -n "/\/\* $layer/,/\*\//p" "$KEYMAP_FILE"
+        sed -n "/\/\* $layer$/,/\*\/$/p" keymap.c
+        # awk "/\/\* $layer/,/\*\//p" keymap.c
+    done    
+else
+    layer=$1
+    sed -n "/\/\* $layer$/,/\*\/$/p" keymap.c
+fi
