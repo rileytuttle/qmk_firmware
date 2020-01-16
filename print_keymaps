@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# making a script to grep through the code to print out keymaps
+
+# KEMAP_FILE="keymap.c"
+
+# layers=$(grep "^\s*_\S*,$" "$KEYMAP_FILE" | sed 's/_\(.*\),/\1/')
+
+# KEYMAP_DIRECTORY="keyboards/preonic/keymaps/rileytuttle"
+KEYMAP_DIRECTORY="keyboards/lily58/keymaps/default/"
+
+pushd "$KEYMAP_DIRECTORY" > /dev/null
+
+layers=$(grep "^\s*[_]\S*,$" keymap.c | sed 's/_\(.*\),/\1/')
+echo $layers
+if [ $# -eq 0 ]; then 
+    for layer in $layers; do
+        echo $layer
+    done    
+else
+    layer=$1
+    sed -n "/\/\* $layer\b/,/\*\/$/p" keymap.c
+fi
+
+popd > /dev/null
