@@ -17,3 +17,12 @@ from there add functions to init the bluetooth and do whatever with it
 for starters just communicate with the board
 then figure out how to connect the board to a bluetooth master (ie. the computer)
 then configure the board as a usb device and then set up as passthrough
+
+
+I think the music stuff isn't working because it isn't using my music_mask_user() function. I think that it is still using the MUSIC
+
+that is definitely the problem with the music mask. it is just using the default music mask thing instead of what I have defined. so I need to figure out where to do that undefining of MUSIC_MASK
+
+now that it is using the correct music_mask_user, we need to make it stop interpreting the layer key as a layer
+
+first check to see how far down the layer key is interpreted
