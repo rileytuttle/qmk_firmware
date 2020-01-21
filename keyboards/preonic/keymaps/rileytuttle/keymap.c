@@ -16,6 +16,7 @@
 
 #include QMK_KEYBOARD_H
 #include "muse.h"
+#include <print.h>
 
 enum preonic_layers {
   _QWERTY,
@@ -30,9 +31,9 @@ enum preonic_layers {
 enum preonic_keycodes {
   QWERTY = SAFE_RANGE,
   GAMING,
-  LOWER2,
   LOWER,
   RAISE,
+  LOWER2,
   RAISE2,
   BACKLIT
 };
@@ -228,6 +229,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           break;
         case LOWER2:
           if (record->event.pressed) {
+            dprintf("inside lower2 layer\n");
             layer_on(_LOWER2);
           } else {
             layer_off(_LOWER2);
@@ -336,11 +338,10 @@ void matrix_scan_user(void) {
 }
 
 bool music_mask_user(uint16_t keycode) {
+  dprintf("my music mask user, keycode %d\n", keycode);
   switch (keycode) {
     case RAISE:
     case LOWER:
-    case RAISE2:
-    case LOWER2:
       return false;
     default:
       return true;
