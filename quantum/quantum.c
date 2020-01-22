@@ -185,6 +185,8 @@ bool process_record_quantum(keyrecord_t *record) {
     //   return false;
     // }
 
+    dprintf("inside process_record_quantum keycode = %d\n", keycode);
+
 #ifdef VELOCIKEY_ENABLE
     if (velocikey_enabled() && record->event.pressed) {
         velocikey_accelerate();
@@ -200,6 +202,7 @@ bool process_record_quantum(keyrecord_t *record) {
             // Must run first to be able to mask key_up events.
             process_key_lock(&keycode, record) &&
 #endif
+            // dprintf("probing for before layer processing 2, keycode = %d\n", keycode);
 #if defined(DYNAMIC_MACRO_ENABLE) && !defined(DYNAMIC_MACRO_USER_CALL)
             // Must run asap to ensure all keypresses are recorded.
             process_dynamic_macro(keycode, record) &&
