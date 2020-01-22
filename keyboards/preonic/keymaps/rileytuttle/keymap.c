@@ -194,6 +194,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (is_music_on() && music_mask_user(keycode)) { // if music is we return true if the key is not in the music mask
+      return true;
+  }
   switch (keycode) {
         case QWERTY:
           if (record->event.pressed) {
@@ -219,7 +222,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           break;
         case RAISE:
           if (record->event.pressed) {
-            dprintf("inside raise layer\n");
             layer_on(_RAISE);
             update_tri_layer(_LOWER, _RAISE, _ADJUST);
           } else {
@@ -230,7 +232,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           break;
         case LOWER2:
           if (record->event.pressed) {
-            dprintf("inside lower2 layer\n");
             layer_on(_LOWER2);
           } else {
             layer_off(_LOWER2);
@@ -262,7 +263,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           return false;
           break;
-      }
+    }
     return true;
 };
 
@@ -339,7 +340,6 @@ void matrix_scan_user(void) {
 }
 
 bool music_mask_user(uint16_t keycode) {
-  dprintf("my music mask user, keycode %d\n", keycode);
   switch (keycode) {
     case RAISE:
     case LOWER:
