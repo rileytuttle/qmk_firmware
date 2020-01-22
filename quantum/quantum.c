@@ -185,8 +185,6 @@ bool process_record_quantum(keyrecord_t *record) {
     //   return false;
     // }
 
-    dprintf("inside process_record_quantum keycode = %d\n", keycode);
-
 #ifdef VELOCIKEY_ENABLE
     if (velocikey_enabled() && record->event.pressed) {
         velocikey_accelerate();
