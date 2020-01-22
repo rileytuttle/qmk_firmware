@@ -219,6 +219,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           break;
         case RAISE:
           if (record->event.pressed) {
+            dprintf("inside raise layer\n");
             layer_on(_RAISE);
             update_tri_layer(_LOWER, _RAISE, _ADJUST);
           } else {
