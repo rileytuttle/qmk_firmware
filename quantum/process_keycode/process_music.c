@@ -232,9 +232,9 @@ bool music_mask(uint16_t keycode) {
 #    endif
 }
 
-__attribute__((weak)) bool music_mask_kb(uint16_t keycode) { dprintf("music_mask_kb\n"); return music_mask_user(keycode); }
+__attribute__((weak)) bool music_mask_kb(uint16_t keycode) { return music_mask_user(keycode); }
 
-__attribute__((weak)) bool music_mask_user(uint16_t keycode) { dprintf("music_mask_user\n"); return keycode < 0xFF; }
+__attribute__((weak)) bool music_mask_user(uint16_t keycode) { return keycode < 0xFF; }
 
 bool is_music_on(void) { return (music_activated != 0); }
 

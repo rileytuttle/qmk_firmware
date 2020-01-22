@@ -26,3 +26,7 @@ that is definitely the problem with the music mask. it is just using the default
 now that it is using the correct music_mask_user, we need to make it stop interpreting the layer key as a layer
 
 first check to see how far down the layer key is interpreted
+
+so I'm pretty sure I figured out how to make it work but I don't know why I need to change something to make it work. So im pretty sure that if I put inside the process_record_user that if we are in music mode don't process the certain layer keys. that should fix it. I should just have to figure out how to find the current layer
+
+my idea worked but I still gotta figure out why the original music_mask_user didn't work. 
