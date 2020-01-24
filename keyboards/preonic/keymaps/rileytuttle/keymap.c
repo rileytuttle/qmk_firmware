@@ -25,6 +25,7 @@ enum preonic_layers {
   _RAISE,
   _LOWER2,
   _RAISE2,
+  _RGBKEY,
   _ADJUST,
 };
 
@@ -35,7 +36,7 @@ enum preonic_keycodes {
   RAISE,
   LOWER2,
   RAISE2,
-  BACKLIT
+  RGBKEY,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -50,7 +51,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  | Shift|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl | Brite| Alt  | GUI  | Lower|Raise2| Space| Raise| Home |PageDn|PageUp| End  |
+ * | Ctrl |RGBKEY| Alt  | GUI  | Lower|Raise2| Space| Raise| Home |PageDn|PageUp| End  |
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = LAYOUT_preonic_grid( \
@@ -58,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS, \
   LOWER2,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_ENT,  \
   KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, \
-  KC_LCTL, BACKLIT, KC_LALT, KC_LGUI, LOWER,   RAISE2,  KC_SPC,  RAISE,   KC_HOME, KC_PGDN, KC_PGUP, KC_END   \
+  KC_LCTL, RGBKEY,  KC_LALT, KC_LGUI, LOWER,   RAISE2,  KC_SPC,  RAISE,   KC_HOME, KC_PGDN, KC_PGUP, KC_END   \
 ),
 
 /* GAMING
@@ -71,7 +72,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  | Shift|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl | Brite| Alt  | GUI  | Lower|Raise2| Space| Raise| Home |PageDn|PageUp| End  |
+ * | Ctrl |RGBKEY| Alt  | GUI  | Lower|Raise2| Space| Raise| Home |PageDn|PageUp| End  |
  * `-----------------------------------------------------------------------------------'
  */
  
@@ -80,7 +81,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS, \
   KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT, KC_ENT,  \
   KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, \
-  KC_LCTL, BACKLIT, KC_LALT, KC_LGUI, KC_SPC,  KC_SPC,  LOWER,   RAISE,   KC_MNXT, KC_VOLD, KC_VOLU, KC_MPLY  \
+  KC_LCTL, RGBKEY,  KC_LALT, KC_LGUI, KC_SPC,  KC_SPC,  LOWER,   RAISE,   KC_MNXT, KC_VOLD, KC_VOLU, KC_MPLY  \
 ),
 
 /* LOWER
@@ -174,7 +175,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      | Reset|      |      |      |      |      |      |      |      |      |      |
+ * |      | Reset| DEBUG|      |      |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+-------------+------+------+------+------+------|
+ * |      |      |      |Aud on|AudOff|AGnorm|AGswap|Qwerty|Gaming|      |      |      |
+ * |------+------+------+------+------+------|------+------+------+------+------+------|
+ * |      |Voice-|Voice+|Mus on|MusOff|MidiOn|MidOff|      |      |      |      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |             |      |      |      |      |      |
+ * `-----------------------------------------------------------------------------------'
+ */
+[_RGBKEY] = LAYOUT_preonic_grid( \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, RGB_TOG, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, RGB_RMOD,RGB_VAD, RGB_VAI, RGB_MOD  \
+),
+
+/* ADJUST
+ * (Lower + Raise)
+ * ,-----------------------------------------------------------------------------------.
+ * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      | Reset| DEBUG|      |      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
  * |      |      |      |Aud on|AudOff|AGnorm|AGswap|Qwerty|Gaming|      |      |      |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
@@ -185,7 +208,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_ADJUST] = LAYOUT_preonic_grid( \
   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  \
-  _______, RESET,   DEBUG,   _______, _______, _______, _______, TERM_ON, TERM_OFF,_______, _______, _______, \
+  _______, RESET,   DEBUG,   RGB_TOG, RGB_MOD, RGB_VAI, _______, TERM_ON, TERM_OFF,_______, _______, _______, \
   _______, _______, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,  GAMING,  _______,  _______, _______, \
   _______, MUV_DE,  MUV_IN,  MU_TOG,  MU_MOD,  MI_ON,   MI_OFF,  CK_TOGG, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
@@ -246,7 +269,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           }
           return false;
           break;
-        case BACKLIT:
+/*        case BACKLIT:
           if (record->event.pressed) {
             register_code(KC_RSFT);
             #ifdef BACKLIGHT_ENABLE
@@ -260,6 +283,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             #ifdef __AVR__
             writePinHigh(E6);
             #endif
+          }
+          return false;
+          break;*/
+        case RGBKEY:
+          if (record->event.pressed) {
+            layer_on(_RGBKEY);
+          } else {
+            layer_off(_RGBKEY);
           }
           return false;
           break;
