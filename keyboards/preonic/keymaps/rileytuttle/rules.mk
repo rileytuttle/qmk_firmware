@@ -3,3 +3,6 @@ SRC += muse.c
 COMMAND_ENABLE = yes
 
 RGBLIGHT_ENABLE = yes
+
+BLUETOOTH_ENABLE = yes
+BLUETOOTH = SparkfunBle

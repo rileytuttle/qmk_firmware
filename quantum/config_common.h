@@ -323,7 +323,7 @@
                 sei();                              \
             } while (0)
 #    else
-#        error "USART configuration is needed."
+// #        error "USART configuration is needed."
 #    endif
 #endif
 

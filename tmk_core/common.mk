@@ -152,6 +152,12 @@ ifeq ($(strip $(BLUETOOTH)), RN42)
 	TMK_COMMON_DEFS += -DNO_USB_STARTUP_CHECK
 endif
 
+ifeq ($(strip $(BLUETOOTH)), SparkfunBle)
+    TMK_COMMON_DEFS += -DBLUETOOTH_ENABLE
+    TMK_COMMON_DEFS += -DMODULE_SPARKFUN_BLE
+    TMK_COMMON_DEFS += -DNO_USB_STARTUP_CHECK
+endif
+
 ifeq ($(strip $(ONEHAND_ENABLE)), yes)
   SWAP_HANDS_ENABLE = yes # backwards compatibility
 endif

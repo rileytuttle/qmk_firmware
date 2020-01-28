@@ -16,8 +16,9 @@
 
 #include "quantum.h"
 
+#define PROTOCOL_LUFA
 #ifdef PROTOCOL_LUFA
-#    include "outputselect.h"
+#    include "tmk_core/protocol/lufa/outputselect.h"
 #endif
 
 #ifdef BACKLIGHT_ENABLE
