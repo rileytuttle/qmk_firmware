@@ -17,6 +17,7 @@
 #include QMK_KEYBOARD_H
 #include "muse.h"
 #include <print.h>
+#include "sparkfun_i2c_test.h"
 
 enum preonic_layers {
   _QWERTY,
@@ -37,6 +38,7 @@ enum preonic_keycodes {
   LOWER2,
   RAISE2,
   RGBKEY,
+  TESTI2C,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -211,7 +213,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, RESET,   DEBUG,   RGB_TOG, RGB_MOD, RGB_VAI, _______, TERM_ON, TERM_OFF,_______, _______, _______, \
   _______, _______, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,  GAMING,  _______,  _______, _______, \
   _______, MUV_DE,  MUV_IN,  MU_TOG,  MU_MOD,  MI_ON,   MI_OFF,  CK_TOGG, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, TESTI2C \
 ),
 
 };
@@ -291,6 +293,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             layer_on(_RGBKEY);
           } else {
             layer_off(_RGBKEY);
+          }
+          return false;
+          break;
+        case TESTI2C:
+          if (record->event.pressed) {
+            dprint("sending test i2c\n");
+            sparkfun_i2c_send_test();
           }
           return false;
           break;

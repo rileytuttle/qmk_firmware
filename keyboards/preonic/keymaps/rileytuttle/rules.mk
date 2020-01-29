@@ -3,3 +3,5 @@ SRC += muse.c
 COMMAND_ENABLE = yes
 
 RGBLIGHT_ENABLE = yes
+
+QWIIC_ENABLE = yes

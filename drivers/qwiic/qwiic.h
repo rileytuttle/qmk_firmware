@@ -23,6 +23,7 @@
 #ifdef QWIIC_MICRO_OLED_ENABLE
 #    include "micro_oled.h"
 #endif
+#    include "sparkfun_i2c_test.h"
 
 void qwiic_init(void);
 void qwiic_task(void);

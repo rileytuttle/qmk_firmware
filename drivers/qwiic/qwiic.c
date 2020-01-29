@@ -22,6 +22,7 @@ void qwiic_init(void) {
 #ifdef QWIIC_MICRO_OLED_ENABLE
     micro_oled_init();
 #endif
+    sparkfun_i2c_test_init();
 }
 
 void qwiic_task(void) {

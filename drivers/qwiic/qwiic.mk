@@ -14,3 +14,5 @@ ifneq ($(filter MICRO_OLED, $(QWIIC_ENABLE)),)
   OPT_DEFS += -DQWIIC_MICRO_OLED_ENABLE
   SRC += micro_oled.c
 endif
+
+SRC += sparkfun_i2c_test.c

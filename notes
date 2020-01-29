@@ -1,0 +1,3 @@
+the next thing that i have to check is what i2c Im using. are we talking GPIOB 6 and 7 like the reference suggests.
+
+then I may need to use the logic analyzer to see if there is any traffic going across the boss
