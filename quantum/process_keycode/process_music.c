@@ -101,7 +101,6 @@ void music_all_notes_off(void) {
 }
 
 bool process_music(uint16_t keycode, keyrecord_t *record) {
-    dprintf("inside process music, keycode = %d\n", keycode);
     if (keycode == MU_ON && record->event.pressed) {
         music_on();
         return false;
