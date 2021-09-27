@@ -1,0 +1,25 @@
+WORKFLOW explained
+
+create github fork of https://github.com/qmk/qmk_firmware
+to your own space. so something like https://github.com/rileytuttle/qmk_firmware
+
+clone qmk_firmware
+    >> git clone --recurse-submodules https://github.com/qmk/qmk_firmware.git
+add remote of your own fork
+    >> git remote add rt git@github.com:rileytuttle/qmk_firmware
+
+now to pull new changes from the origin 
+    >> git pull --rebase origin
+then we create a new branch
+    >> git branch new_branch
+now all changes from origin can be done on new_branch and saved onto the fork
+    >> git checkout new_branch
+    >> # make changes
+    >> git commit -a -m "changes"
+    >> git push rt new_branch
+
+if we want to checkout that new branch
+    >> git fetch rt
+    >> git checkout new_branch
+
+
