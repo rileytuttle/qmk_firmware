@@ -18,17 +18,17 @@ def get_layers(args):
                         if match is not None:
                             printing = False
             else:
-                for layer in args.layers:
-                    printing = False
-                    for line in f.readlines():
+                printing = False
+                for line in f.readlines():
+                    for layer in args.layers:
                         match = re.match(f"\/\* {layer}$", line)
                         if match is not None:
                             printing = True
-                        if printing:
-                            print(line.rstrip())
-                            match = re.match(f" \*\/$", line)
-                            if match is not None:
-                                printing = False
+                    if printing:
+                        print(line.rstrip())
+                        match = re.match(f" \*\/$", line)
+                        if match is not None:
+                            printing = False
         else:
             for line in f.readlines():
                 match = re.match(f"\/\* (\S+)$", line)
