@@ -251,12 +251,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
           break;
         case LOWER2:
-          if (record->event.pressed) {
-            layer_on(_LOWER2);
-          } else {
-            layer_off(_LOWER2);
+          // this is necessary because this function would normally return false
+          // but in order for music to work we need this to return true along with the
+          // music_mask(keycode) -> process_music() function.
+          // added this is_music_on condition but I don't know
+          // what will happen if music is disabled. might not compile correctly
+          // leaving like this for now until I figure out a more correct way to fix it
+          if (!is_music_on())
+          {
+              if (record->event.pressed) {
+                layer_on(_LOWER2);
+              } else {
+                layer_off(_LOWER2);
+              }
+              return false;
           }
-          return false;
           break;
         case RAISE2:
           if (record->event.pressed) {
