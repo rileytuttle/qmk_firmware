@@ -223,16 +223,12 @@ bool process_music(uint16_t keycode, keyrecord_t *record) {
 }
 
 bool music_mask(uint16_t keycode) {
-#    ifdef MUSIC_MASK
-    return MUSIC_MASK;
-#    else
     return music_mask_kb(keycode);
-#    endif
 }
 
 __attribute__((weak)) bool music_mask_kb(uint16_t keycode) { return music_mask_user(keycode); }
 
-__attribute__((weak)) bool music_mask_user(uint16_t keycode) { return keycode < 0xFF; }
+// __attribute__((weak)) bool music_mask_user(uint16_t keycode) { return keycode < 0xFF; }
 
 bool is_music_on(void) { return (music_activated != 0); }
 

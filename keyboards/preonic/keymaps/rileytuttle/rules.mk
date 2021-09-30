@@ -1,3 +1,2 @@
 SRC += muse.c
 TERMINAL_ENABLE = yes
-CONSOLE_ENABLE = yes
