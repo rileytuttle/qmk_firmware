@@ -366,7 +366,13 @@ bool music_mask_user(uint16_t keycode) {
     case RAISE:
     case LOWER:
       return false;
+    case LOWER2:
     default:
       return true;
   }
 }
+
+// void keyboard_post_init_user(void) {
+//   debug_enable=true;
+//   debug_matrix=true;
+// }
