@@ -23,8 +23,8 @@ enum preonic_layers {
   _LOWER,
   _RAISE,
   _LOWER2,
-  _RAISE2,
-  _RGBKEY,
+  _TMUX,
+  _RGB,
   _ADJUST,
 };
 
@@ -34,7 +34,7 @@ enum preonic_keycodes {
   LOWER,
   RAISE,
   LOWER2,
-  RAISE2,
+  TMUX,
   RGBKEY,
   EXTRAKTO, // extrakto macro
 };
@@ -51,7 +51,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  | Shift|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl |RGBKEY| Alt  | GUI  | Lower|Raise2| Space| Raise| Left | Down |  Up  | Right|
+ * | Ctrl |RGBKEY| Alt  | GUI  | Lower| TMUX | Space| Raise| Left | Down |  Up  | Right|
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = LAYOUT_preonic_grid( \
@@ -59,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS, \
   LOWER2,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_ENT,  \
   KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, \
-  KC_LCTL, RGBKEY,  KC_LALT, KC_LGUI, LOWER,   RAISE2,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT \
+  KC_LCTL, RGBKEY,  KC_LALT, KC_LGUI, LOWER,   TMUX,    KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT \
 ),
 
 /* GAMING
@@ -149,7 +149,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______, _______, _______, _______, KC_BTN1, KC_BTN2, _______, _______, _______, _______, _______  \
 ),
 
-/* RAISE2
+/* TMUX
  * used for tmux control
  * ,-----------------------------------------------------------------------------------.
  * |      |      |      |      |      |      |      |      |      |      |      |      |
@@ -163,7 +163,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * | LALT |      |      |      |      |      |      |      |S-left|S-down| S-up |S-rght|
  * `-----------------------------------------------------------------------------------'
  */
-[_RAISE2] = LAYOUT_preonic_grid( \
+[_TMUX] = LAYOUT_preonic_grid( \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   EXTRAKTO,_______, _______, _______, _______, _______, _______, _______, _______, _______, C(A(KC_RBRC)),C(A(KC_BSLS)), \
   _______, _______, _______, _______, _______, _______, C(KC_LEFT),C(KC_DOWN),C(KC_UP),C(KC_RGHT),_______, _______, \
@@ -185,7 +185,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |      |      |      |      |      |      |      |      | MOD- | BRTUP| BRTDN| MOD+ |
  * `-----------------------------------------------------------------------------------'
  */
-[_RGBKEY] = LAYOUT_preonic_grid( \
+[_RGB] = LAYOUT_preonic_grid( \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, RGB_TOG, _______, _______, _______, _______, \
@@ -268,19 +268,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               return false;
           }
           break;
-        case RAISE2:
+        case TMUX:
           if (record->event.pressed) {
-            layer_on(_RAISE2);
+            layer_on(_TMUX);
           } else {
-            layer_off(_RAISE2);
+            layer_off(_TMUX);
           }
           return false;
           break;
         case RGBKEY:
           if (record->event.pressed) {
-            layer_on(_RGBKEY);
+            layer_on(_RGB);
           } else {
-            layer_off(_RGBKEY);
+            layer_off(_RGB);
           }
           return false;
           break;
