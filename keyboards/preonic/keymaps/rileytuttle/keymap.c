@@ -36,6 +36,7 @@ enum preonic_keycodes {
   LOWER2,
   RAISE2,
   RGBKEY,
+  EXTRAKTO, // extrakto macro
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -153,7 +154,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |      |      |      |      |      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      | C-A-]| C-A-\|
+ * |XTRKTO|      |      |      |      |      |      |      |      |      | C-A-]| C-A-\|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |      |      |      |      |      |C-left|C-down| C-up |C-rght|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -164,7 +165,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_RAISE2] = LAYOUT_preonic_grid( \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, C(A(KC_RBRC)),C(A(KC_BSLS)), \
+  EXTRAKTO,_______, _______, _______, _______, _______, _______, _______, _______, _______, C(A(KC_RBRC)),C(A(KC_BSLS)), \
   _______, _______, _______, _______, _______, _______, C(KC_LEFT),C(KC_DOWN),C(KC_UP),C(KC_RGHT),_______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   KC_LALT, _______, _______, _______, _______, _______, _______, _______, S(KC_LEFT),S(KC_DOWN),S(KC_UP),S(KC_RGHT) \
@@ -280,6 +281,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             layer_on(_RGBKEY);
           } else {
             layer_off(_RGBKEY);
+          }
+          return false;
+          break;
+        case EXTRAKTO:
+          if (record->event.pressed) {
+            SEND_STRING(SS_LCTL("t")SS_TAP(X_TAB));
           }
           return false;
           break;
