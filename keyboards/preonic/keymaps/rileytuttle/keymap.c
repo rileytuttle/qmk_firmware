@@ -26,6 +26,7 @@ enum preonic_layers {
   _TMUX,
   _RGB,
   _ADJUST,
+  _LALT,
 };
 
 enum preonic_keycodes {
@@ -82,6 +83,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT, KC_ENT,  \
   KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, \
   KC_LCTL, RGBKEY,  KC_LALT, KC_LGUI, KC_SPC,  LOWER,   KC_SPC,  RAISE,   KC_MNXT, KC_VOLD, KC_VOLU, KC_MPLY  \
+),
+
+/* LALT
+ * holds some common alt key combos
+ * ,-----------------------------------------------------------------------------------.
+ * |   `  |      |      |  F4  |      |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * | S-tab|      |      |      |      |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |      |      |      |      |      |      |      |
+ * `-----------------------------------------------------------------------------------'
+ */
+[_LALT] = LAYOUT_preonic_grid( \
+  KC_GRV,  _______, _______, KC_F4,   _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  S(KC_TAB),  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
 ),
 
 /* LOWER
@@ -230,6 +253,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             set_single_persistent_default_layer(_GAMING);
           }
           return false;
+          break;
+        case KC_LALT:
+          if (record->event.pressed) {
+            layer_on(_LALT);
+          } else {
+            layer_off(_LALT);
+          }
+          // break and return true
+          // this way alt is still handled
           break;
         case LOWER:
           if (record->event.pressed) {
