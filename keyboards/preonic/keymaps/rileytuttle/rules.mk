@@ -1,2 +1,4 @@
 SRC += muse.c
 TERMINAL_ENABLE = yes
+
+ENCODER_ENABLE = yes
