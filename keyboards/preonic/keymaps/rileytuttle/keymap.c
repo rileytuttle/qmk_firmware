@@ -16,6 +16,7 @@
 
 #include QMK_KEYBOARD_H
 #include "muse.h"
+#include "security.h"
 
 enum preonic_layers {
   _QWERTY,
@@ -27,6 +28,7 @@ enum preonic_layers {
   _RGB,
   _ADJUST,
   _LALT,
+  _PWORD,
 };
 
 enum preonic_keycodes {
@@ -39,6 +41,9 @@ enum preonic_keycodes {
   RGBKEY,
   EXTRKTO, // extrakto macro
   ESCSHEL, // escape shell macro
+  PWORD, // PWORD layer key
+  WORKP, // work password
+  HOMEP, // personal password
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -222,7 +227,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      | Reset| DEBUG|      |      |      |      | TrmOn|TrmOff|      |      |      |
+ * |      | Reset| DEBUG|      |      |      |      | TrmOn|TrmOff|      | PWORD|      |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
  * |      |      |      |Aud on|AudOff|AGnorm|AGswap|Qwerty|Gaming|      |      |      |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
@@ -233,9 +238,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_ADJUST] = LAYOUT_preonic_grid( \
   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  \
-  _______, RESET,   DEBUG,   RGB_TOG, RGB_MOD, RGB_VAI, _______, TERM_ON, TERM_OFF,_______, _______, _______, \
+  _______, RESET,   DEBUG,   RGB_TOG, RGB_MOD, RGB_VAI, _______, TERM_ON, TERM_OFF,_______, PWORD,   _______, \
   _______, _______, _______, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,  GAMING,  _______, _______, _______, \
   _______, MUV_DE,  MUV_IN,  MU_TOG,  MU_MOD,  MI_ON,   MI_OFF,  CK_TOGG, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
+),
+
+/* PWORD
+ * Password layer
+ */
+[_PWORD] = LAYOUT_preonic_grid( \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, WORKP,   _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, HOMEP,   _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
 ),
 
@@ -326,6 +342,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case ESCSHEL:
           if (record->event.pressed) {
             SEND_STRING("~."SS_TAP(X_ENTER));
+          }
+          return false;
+          break;
+        case PWORD:
+          if (record->event.pressed) {
+            layer_on(_PWORD);
+          } else {
+            layer_off(_PWORD);
+          }
+          return false;
+          break;
+        case WORKP:
+          if (record->event.pressed) {
+            SEND_STRING(WORK_PWORD);
+          }
+          return false;
+          break;
+        case HOMEP:
+          if (record->event.pressed) {
+            SEND_STRING(PERSONAL_PWORD);
           }
           return false;
           break;
