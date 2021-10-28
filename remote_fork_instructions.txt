@@ -22,4 +22,5 @@ if we want to checkout that new branch
     >> git fetch rt
     >> git checkout new_branch
 
-
+if we want to pull origin:master changes into rt:new_branch
+    >> git pull --rebase origin master
