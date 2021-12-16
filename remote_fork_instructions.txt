@@ -24,3 +24,11 @@ if we want to checkout that new branch
 
 if we want to pull origin:master changes into rt:new_branch
     >> git pull --rebase origin master
+
+if we want to pull rt:new_branch remote changes into local branch
+for the use case where multiple people/workstations are working on the same branch
+    >> git checkout new_branch
+    >> git pull --rebase rt new_branch
+
+dont forget to update submodules
+    >> git submodule update --init --recursive
