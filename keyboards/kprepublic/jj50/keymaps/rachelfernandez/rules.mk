@@ -1,0 +1,1 @@
+TERMINAL_ENABLE = yes
