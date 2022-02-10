@@ -44,6 +44,7 @@ enum preonic_keycodes {
   PWORD, // PWORD layer key
   WORKP, // work password
   HOMEP, // personal password
+  SSHP, // ssh passphrase
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -261,7 +262,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_PWORD] = LAYOUT_preonic_grid( \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   _______, _______, WORKP,   _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, HOMEP,   _______, _______, _______, _______, _______, \
+  _______, _______, SSHP,    _______, _______, _______, HOMEP,   _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
 ),
@@ -367,6 +368,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case WORKP:
           if (record->event.pressed) {
             SEND_STRING(WORK_PWORD);
+          }
+          return false;
+          break;
+        case SSHP:
+          if (record->event.pressed) {
+            SEND_STRING(SSH_PPHRASE);
           }
           return false;
           break;
