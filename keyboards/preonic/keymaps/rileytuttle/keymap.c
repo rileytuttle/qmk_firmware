@@ -41,10 +41,11 @@ enum preonic_keycodes {
   RGBKEY,
   EXTRKTO, // extrakto macro
   ESCSHEL, // escape shell macro
-  PWORD, // PWORD layer key
-  WORKP, // work password
-  HOMEP, // personal password
-  SSHP, // ssh passphrase
+  PWORD,   // PWORD layer key
+  WORKP,   // work password
+  HOMEP,   // personal password
+  SSHP,    // ssh passphrase
+  NAME,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -250,9 +251,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |      |      |      |      |      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      | work |      |      |      |      |      |      |      |      |      |
+ * |      |      | work |      | name |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      | home |      |      |      |      |      |
+ * |      |      | sshp |      |      |      | home |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |      |      |      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -261,7 +262,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_PWORD] = LAYOUT_preonic_grid( \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, WORKP,   _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, WORKP,   _______, NAME,    _______, _______, _______, _______, _______, _______, _______, \
   _______, _______, SSHP,    _______, _______, _______, HOMEP,   _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
@@ -380,6 +381,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case HOMEP:
           if (record->event.pressed) {
             SEND_STRING(PERSONAL_PWORD);
+          }
+          return false;
+          break;
+        case NAME:
+          if (record->event.pressed) {
+            SEND_STRING(FULL_NAME_NO_SPACE);
           }
           return false;
           break;
