@@ -325,17 +325,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           if (record->event.pressed)
           {
             layer_on(_RAISE);
+            update_tri_layer(_LOWER, _RAISE, _ADJUST);
+          }
+          else
+          {
             if (!layer_hold_toggle)
             {
-              // only update the tri layer if we aren't holding the layer
-              update_tri_layer(_LOWER, _RAISE, _ADJUST);
+              // if the key is not pressed and we aren't holding the layer
+              // turn the layer off
+              layer_off(_RAISE);
             }
-          }
-          else if (!layer_hold_toggle)
-          {
-            // if the key is not pressed and we aren't holding the layer
-            // turn the layer off
-            layer_off(_RAISE);
             update_tri_layer(_LOWER, _RAISE, _ADJUST);
           }
           prev = current;
