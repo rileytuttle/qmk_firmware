@@ -304,15 +304,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
           break;
         case RAISE:
-          if (record->event.pressed) {
+        {
+          static bool prev = false;
+          static bool layer_hold_toggle = false;
+          static uint16_t timer = 0;
+          static const uint16_t DOUBLE_TAP_THRESHOLD = 100;
+          const bool current = record->event.pressed;
+          if (prev && !current)
+          {
+            // on a falling edge start a timer
+            timer = timer_read();
+          }
+          else if (!prev && current && timer_elapsed(timer) < DOUBLE_TAP_THRESHOLD)
+          {
+            // if we have a rising edge shortly after the previous falling edge
+            // toggle the layer hold
+            layer_hold_toggle = !layer_hold_toggle;
+          }
+
+          if (record->event.pressed)
+          {
             layer_on(_RAISE);
-            update_tri_layer(_LOWER, _RAISE, _ADJUST);
-          } else {
+            if (!layer_hold_toggle)
+            {
+              // only update the tri layer if we aren't holding the layer
+              update_tri_layer(_LOWER, _RAISE, _ADJUST);
+            }
+          }
+          else if (!layer_hold_toggle)
+          {
+            // if the key is not pressed and we aren't holding the layer
+            // turn the layer off
             layer_off(_RAISE);
             update_tri_layer(_LOWER, _RAISE, _ADJUST);
           }
+          prev = current;
           return false;
           break;
+        }
         case LOWER2:
           // this is necessary because this function would normally return false
           // but in order for music to work we need this to return true along with the
