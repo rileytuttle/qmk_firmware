@@ -17,6 +17,7 @@
 #include QMK_KEYBOARD_H
 #include "muse.h"
 #include "security.h"
+#include "toggler.h"
 
 enum preonic_layers {
   _QWERTY,
@@ -270,6 +271,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
+static TogglerData raise_hold_toggler_data;
+static TogglerData lower2_hold_toggler_data;
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
         case QWERTY:
@@ -305,22 +309,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           break;
         case RAISE:
         {
-          static bool prev = false;
-          static bool layer_hold_toggle = false;
-          static uint16_t timer = 0;
-          static const uint16_t DOUBLE_TAP_THRESHOLD = 100;
-          const bool current = record->event.pressed;
-          if (prev && !current)
-          {
-            // on a falling edge start a timer
-            timer = timer_read();
-          }
-          else if (!prev && current && timer_elapsed(timer) < DOUBLE_TAP_THRESHOLD)
-          {
-            // if we have a rising edge shortly after the previous falling edge
-            // toggle the layer hold
-            layer_hold_toggle = !layer_hold_toggle;
-          }
+          const bool layer_hold_toggle = toggle_update(&raise_hold_toggler_data, record->event.pressed);
 
           if (record->event.pressed)
           {
@@ -337,11 +326,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             update_tri_layer(_LOWER, _RAISE, _ADJUST);
           }
-          prev = current;
           return false;
           break;
         }
         case LOWER2:
+        {
+          const bool layer_hold_toggle = toggle_update(&lower2_hold_toggler_data, record->event.pressed);
           // this is necessary because this function would normally return false
           // but in order for music to work we need this to return true along with the
           // music_mask(keycode) -> process_music() function.
@@ -350,14 +340,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           // leaving like this for now until I figure out a more correct way to fix it
           if (!is_music_on())
           {
-              if (record->event.pressed) {
+              if (record->event.pressed)
+              {
                 layer_on(_LOWER2);
-              } else {
+              }
+              else if (!layer_hold_toggle)
+              {
                 layer_off(_LOWER2);
               }
               return false;
           }
           break;
+        }
         case TMUX:
           if (record->event.pressed) {
             layer_on(_TMUX);
