@@ -8,18 +8,33 @@ typedef struct {
   uint16_t timer;
 } TogglerData;
 
+
+/**
+ * this toggler will toggle on with a quick double tap
+ * and toggle off with a single tap
+ */
 bool toggle_update(TogglerData *data, const bool current)
 {
-  if (data->prev && !current)
+  if (!data->toggle)
   {
-    // on a falling edge start a timer
-    data->timer = timer_read();
+    if (data->prev && !current)
+    {
+      // on a falling edge start a timer
+      data->timer = timer_read();
+    }
+    else if (!data->prev && current && timer_elapsed(data->timer) < DOUBLE_TAP_THRESHOLD)
+    {
+      // if we have a rising edge shortly after the previous falling edge
+      // toggle the layer hold
+      data->toggle = true;
+    }
   }
-  else if (!data->prev && current && timer_elapsed(data->timer) < DOUBLE_TAP_THRESHOLD)
+  else
   {
-    // if we have a rising edge shortly after the previous falling edge
-    // toggle the layer hold
-    data->toggle = !data->toggle;
+    if (!data->prev && current)
+    {
+      data->toggle = false;
+    }
   }
   data->prev = current;
   return data->toggle;
