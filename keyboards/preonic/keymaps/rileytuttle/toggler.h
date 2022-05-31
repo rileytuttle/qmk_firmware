@@ -1,6 +1,6 @@
 #include "timer.h"
 
-const uint16_t DOUBLE_TAP_THRESHOLD = 100;
+const uint16_t DOUBLE_TAP_THRESHOLD = 90;
 
 typedef struct {
   bool prev;
