@@ -21,18 +21,50 @@
 
 enum ploopy_layers {
     _BASE,
-    _LAYER_2,
+    _LAYER_SELECTION,
+    _GAMING,
 };
 
 enum my_ploopy_keycodes {
   LAYER_KEY = PLOOPY_SAFE_RANGE,
 };
 
+/* LAYOUTS are as follows
+ *         | BTN_0 | BTN_1 | BTN_3 | BTN_4 |
+ * | BTN_5 |           | BTN_2 |
+ * | BTN_6 |           | BTN_7 |
+ */
+
+#define LAYOUT_PLOOPY_MOUSE(k0, k1, k2, k3, k4, k5, k6, k7) LAYOUT(k0, k1, k3, k4, k5, k2, k6, k7)
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [_BASE] = LAYOUT(/* Base */
-        C(KC_C), KC_BTN1, KC_BTN3, KC_BTN2, C(KC_V), KC_BTN4, KC_BTN5, DPI_CONFIG),
-    [_LAYER_2] = LAYOUT(/* LAYER 2 */
-        C(KC_C), KC_BTN1, KC_BTN3, KC_BTN2, C(KC_V), KC_BTN4, KC_BTN5, DPI_CONFIG),
+    /* BASE
+     *         |CTRL_C |LFTCLK |RGHTCLK|CTRL_V |
+     * |FORWARD|           |SCRLCLK|
+     * | BACK  |           |LYERSEL|
+     */
+    [_BASE] = LAYOUT_PLOOPY_MOUSE(
+                C(KC_C), KC_BTN1, KC_BTN2, C(KC_V),
+        KC_BTN4,             KC_BTN3,
+        KC_BTN5,             LT(_LAYER_SELECTION, KC_BTN5)
+    ),
+
+    [_LAYER_SELECTION] = LAYOUT_PLOOPY_MOUSE(
+                C(KC_C), KC_BTN1, KC_BTN2, C(KC_V),
+        KC_BTN4,             KC_BTN3,
+        KC_BTN5,             LT(_LAYER_SELECTION, KC_BTN5)
+    ),
+
+    /* GAMING
+     *         |CTRL_C |LFTCLK |RGHTCLK|CTRL_V |
+     * |FORWARD|           |SCRLCLK|
+     * | BACK  |           |DPICONF|
+     */
+    [_GAMING] = LAYOUT_PLOOPY_MOUSE(
+                C(KC_C), KC_BTN1, KC_BTN2, C(KC_V),
+        KC_BTN4,             KC_BTN3,
+        KC_BTN5,             LT(_LAYER_SELECTION, KC_BTN5)
+    ),
              
 };
 
