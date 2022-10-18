@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
+#include "timer.h"
 
 // safe range starts at `PLOOPY_SAFE_RANGE` instead.
 
@@ -50,9 +51,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [_LAYER_SELECTION] = LAYOUT_PLOOPY_MOUSE(
-                C(KC_C), KC_BTN1, KC_BTN2, C(KC_V),
-        KC_BTN4,             KC_BTN3,
-        KC_BTN5,             LT(_LAYER_SELECTION, KC_BTN5)
+                _______, DF(_BASE), DF(_GAMING), _______,
+        _______,             _______,
+        _______,             _______
     ),
 
     /* GAMING
@@ -70,5 +71,96 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //     switch (keycode) {
-//         case LAYER_KEY:
-//             if 
+//         case GAMING_LAYER_KEY:
+//             set_single_persistent_default_layer(_GAMING)
+
+enum GestureType
+{
+    GESTURE_TYPE_NONE,
+    GESTURE_TYPE_VERTICAL,
+    GESTURE_TYPE_HORIZONTAL,
+};
+
+enum GestureDirection
+{
+    GESTURE_DIRECTION_NONE,
+    GESTURE_DIRECTION_UP,
+    GESTURE_DIRECTION_DOWN,
+    GESTURE_DIRECTION_LEFT,
+    GESTURE_DIRECTION_RIGHT
+};
+
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
+{
+    // going to need a way to limit this to sending once per mouse stroke (something like mark the direction and then only use it once it goes back to zero)
+    // or ignore everything after the first one until we reset to zero
+    static bool some_key_pressed = false;
+    static bool sent_gesture = false;
+    static uint16_t sent_gesture_timestamp = 0;
+    if (timer_elapsed(sent_gesture_timestamp) > 2000)
+    {
+        sent_gesture = false;
+    }
+    if (some_key_pressed)
+    {
+        int gesture_type = GESTURE_TYPE_NONE;
+        int gesture_dir = GESTURE_DIRECTION_NONE;
+        // interpret the mouse as key actions
+        if (mouse_report.x != 0 && mouse_report.y != 0)
+        {
+            if (abs(mouse_report.x) >= abs(mouse_report.y)) { gesture_type = GESTURE_TYPE_VERTICAL; }
+            else { gesture_type = GESTURE_TYPE_HORIZONTAL; }
+        }
+        else if (mouse_report.x != 0)
+        {
+            gesture_type = GESTURE_TYPE_VERTICAL;
+        }
+        else if (mouse_report.y != 0)
+        {
+            gesture_type = GESTURE_TYPE_HORIZONTAL;
+        }
+        switch (gesture_type)
+        {
+            case GESTURE_TYPE_VERTICAL:
+                if (mouse_report.y > 0) { gesture_dir = GESTURE_DIRECTION_UP; }
+                else if (mouse_report.y < 0) { gesture_dir = GESTURE_DIRECTION_DOWN; }
+                break;
+            case GESTURE_TYPE_HORIZONTAL:
+                if (mouse_report.x > 0) { gesture_dir = GESTURE_DIRECTION_RIGHT; }
+                else if (mouse_report.x < 0) { gesture_dir = GESTURE_DIRECTION_LEFT; }
+                break;
+            case GESTURE_TYPE_NONE:
+                gesture_dir = GESTURE_DIRECTION_NONE;
+                break;
+        }
+        switch (gesture_dir)
+        {
+            case GESTURE_DIRECTION_UP:
+                // placeholder
+                break;
+            case GESTURE_DIRECTION_DOWN:
+                // placeholder
+                break;
+            case GESTURE_DIRECTION_LEFT:
+                // placeholder
+                break;
+            case GESTURE_DIRECTION_RIGHT:
+                if (!sent_gesture)
+                {
+                    SEND_STRING(SS_LGUI(SS_TAP(X_RIGHT)));
+                }
+                sent_gesture = true;
+                break;
+            case GESTURE_DIRECTION_NONE:
+                // placeholder
+                break;
+        }
+        mouse_report.x = 0;
+        mouse_report.y = 0;
+    }
+    else
+    {
+        sent_gesture = false;
+    }
+    return mouse_report;
+}

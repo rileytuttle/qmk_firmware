@@ -20,10 +20,10 @@
 
 /* To compile the ChibiOS syscall stubs with picolibc
  * the _reent struct has to be defined. */
-#if defined(USE_PICOLIBC)
+// #if defined(USE_PICOLIBC)
 struct _reent;
 struct timeval;
-#endif
+// #endif
 
 #pragma GCC diagnostic ignored "-Wmissing-prototypes"
 
