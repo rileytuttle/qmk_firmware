@@ -28,6 +28,7 @@ enum ploopy_layers {
 
 enum my_ploopy_keycodes {
   LAYER_KEY = PLOOPY_SAFE_RANGE,
+  GESTURE_KEY,
 };
 
 /* LAYOUTS are as follows
@@ -36,7 +37,7 @@ enum my_ploopy_keycodes {
  * | BTN_6 |           | BTN_7 |
  */
 
-#define LAYOUT_PLOOPY_MOUSE(k0, k1, k2, k3, k4, k5, k6, k7) LAYOUT(k0, k1, k3, k4, k5, k2, k6, k7)
+#define LAYOUT_PLOOPY_MOUSE(k0, k1, k2, k3, k4, k5, k6, k7) LAYOUT(k0, k1, k5, k2, k3, k4, k6, k7)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* BASE
@@ -45,9 +46,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * | BACK  |           |LYERSEL|
      */
     [_BASE] = LAYOUT_PLOOPY_MOUSE(
-                C(KC_C), KC_BTN1, KC_BTN2, C(KC_V),
+                GESTURE_KEY, KC_BTN1, KC_BTN2, C(KC_V),
         KC_BTN4,             KC_BTN3,
-        KC_BTN5,             LT(_LAYER_SELECTION, KC_BTN5)
+        KC_BTN5,             LT(_LAYER_SELECTION, KC_BTN6)
     ),
 
     [_LAYER_SELECTION] = LAYOUT_PLOOPY_MOUSE(
@@ -69,10 +70,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
              
 };
 
-// bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-//     switch (keycode) {
-//         case GAMING_LAYER_KEY:
-//             set_single_persistent_default_layer(_GAMING)
+static bool s_gesture_key_pressed = false;
+static bool s_sent_gesture = false;
+static uint16_t s_sent_gesture_timestamp = 0;
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case GESTURE_KEY:
+            s_gesture_key_pressed = record->event.pressed;
+            break;
+    }
+    return true;
+}
 
 enum GestureType
 {
@@ -94,14 +103,11 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
 {
     // going to need a way to limit this to sending once per mouse stroke (something like mark the direction and then only use it once it goes back to zero)
     // or ignore everything after the first one until we reset to zero
-    static bool some_key_pressed = false;
-    static bool sent_gesture = false;
-    static uint16_t sent_gesture_timestamp = 0;
-    if (timer_elapsed(sent_gesture_timestamp) > 2000)
+    if (timer_elapsed(s_sent_gesture_timestamp) > 2000)
     {
-        sent_gesture = false;
+        s_sent_gesture = false;
     }
-    if (some_key_pressed)
+    if (s_gesture_key_pressed)
     {
         int gesture_type = GESTURE_TYPE_NONE;
         int gesture_dir = GESTURE_DIRECTION_NONE;
@@ -122,12 +128,12 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
         switch (gesture_type)
         {
             case GESTURE_TYPE_VERTICAL:
-                if (mouse_report.y > 0) { gesture_dir = GESTURE_DIRECTION_UP; }
-                else if (mouse_report.y < 0) { gesture_dir = GESTURE_DIRECTION_DOWN; }
+                if (mouse_report.y > 0) { gesture_dir = GESTURE_DIRECTION_RIGHT; }
+                else if (mouse_report.y < 0) { gesture_dir = GESTURE_DIRECTION_LEFT; }
                 break;
             case GESTURE_TYPE_HORIZONTAL:
-                if (mouse_report.x > 0) { gesture_dir = GESTURE_DIRECTION_RIGHT; }
-                else if (mouse_report.x < 0) { gesture_dir = GESTURE_DIRECTION_LEFT; }
+                if (mouse_report.x > 0) { gesture_dir = GESTURE_DIRECTION_DOWN; }
+                else if (mouse_report.x < 0) { gesture_dir = GESTURE_DIRECTION_UP; }
                 break;
             case GESTURE_TYPE_NONE:
                 gesture_dir = GESTURE_DIRECTION_NONE;
@@ -136,20 +142,32 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
         switch (gesture_dir)
         {
             case GESTURE_DIRECTION_UP:
-                // placeholder
+                if (!s_sent_gesture)
+                {
+                    SEND_STRING(SS_LGUI(SS_TAP(X_UP)));
+                }
+                s_sent_gesture = true;
                 break;
             case GESTURE_DIRECTION_DOWN:
-                // placeholder
+                if (!s_sent_gesture)
+                {
+                    SEND_STRING(SS_LGUI(SS_TAP(X_DOWN)));
+                }
+                s_sent_gesture = true;
                 break;
             case GESTURE_DIRECTION_LEFT:
-                // placeholder
+                if (!s_sent_gesture)
+                {
+                    SEND_STRING(SS_LGUI(SS_TAP(X_LEFT)));
+                }
+                s_sent_gesture = true;
                 break;
             case GESTURE_DIRECTION_RIGHT:
-                if (!sent_gesture)
+                if (!s_sent_gesture)
                 {
                     SEND_STRING(SS_LGUI(SS_TAP(X_RIGHT)));
                 }
-                sent_gesture = true;
+                s_sent_gesture = true;
                 break;
             case GESTURE_DIRECTION_NONE:
                 // placeholder
@@ -160,7 +178,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
     }
     else
     {
-        sent_gesture = false;
+        s_sent_gesture = false;
     }
     return mouse_report;
 }
