@@ -17,6 +17,7 @@
  */
 #include QMK_KEYBOARD_H
 #include "timer.h"
+#include "gesture.h"
 
 // safe range starts at `PLOOPY_SAFE_RANGE` instead.
 
@@ -32,8 +33,8 @@ enum my_ploopy_keycodes {
 };
 
 /* LAYOUTS are as follows
- *         | BTN_0 | BTN_1 | BTN_3 | BTN_4 |
- * | BTN_5 |           | BTN_2 |
+ *         | BTN_0 | BTN_1 | BTN_2 | BTN_3 |
+ * | BTN_4 |           | BTN_5 |
  * | BTN_6 |           | BTN_7 |
  */
 
@@ -70,119 +71,85 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
              
 };
 
-static bool s_gesture_key_pressed = false;
+static GestureData s_gesture_data;
 static bool s_sent_gesture = false;
 static uint16_t s_sent_gesture_timestamp = 0;
+static bool s_rotate_scroll_dir;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case GESTURE_KEY:
-            s_gesture_key_pressed = record->event.pressed;
+            gesture_update_key_state(&s_gesture_data, record->event.pressed);
+            break;
+        case LT(0, KC_BTN3):
+            if (!record->tap.count && record->event.pressed)
+            {
+                s_rotate_scroll_dir = true;
+            }
+            else
+            {
+                s_rotate_scroll_dir = false;
+            }
             break;
     }
     return true;
 }
 
-enum GestureType
-{
-    GESTURE_TYPE_NONE,
-    GESTURE_TYPE_VERTICAL,
-    GESTURE_TYPE_HORIZONTAL,
-};
-
-enum GestureDirection
-{
-    GESTURE_DIRECTION_NONE,
-    GESTURE_DIRECTION_UP,
-    GESTURE_DIRECTION_DOWN,
-    GESTURE_DIRECTION_LEFT,
-    GESTURE_DIRECTION_RIGHT
-};
-
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
 {
-    // going to need a way to limit this to sending once per mouse stroke (something like mark the direction and then only use it once it goes back to zero)
-    // or ignore everything after the first one until we reset to zero
     if (timer_elapsed(s_sent_gesture_timestamp) > 1000)
     {
         s_sent_gesture = false;
     }
-    if (s_gesture_key_pressed)
+    GestureDirection gesture_dir = gesture_update(&s_gesture_data, mouse_report);
+    switch (gesture_dir)
     {
-        int gesture_type = GESTURE_TYPE_NONE;
-        int gesture_dir = GESTURE_DIRECTION_NONE;
-        // interpret the mouse as key actions
-        if (mouse_report.x != 0 && mouse_report.y != 0)
-        {
-            if (abs(mouse_report.x) >= abs(mouse_report.y)) { gesture_type = GESTURE_TYPE_VERTICAL; }
-            else { gesture_type = GESTURE_TYPE_HORIZONTAL; }
-        }
-        else if (mouse_report.x != 0)
-        {
-            gesture_type = GESTURE_TYPE_VERTICAL;
-        }
-        else if (mouse_report.y != 0)
-        {
-            gesture_type = GESTURE_TYPE_HORIZONTAL;
-        }
-        switch (gesture_type)
-        {
-            case GESTURE_TYPE_VERTICAL:
-                if (mouse_report.y > 0) { gesture_dir = GESTURE_DIRECTION_LEFT; }
-                else if (mouse_report.y < 0) { gesture_dir = GESTURE_DIRECTION_RIGHT; }
-                break;
-            case GESTURE_TYPE_HORIZONTAL:
-                if (mouse_report.x > 0) { gesture_dir = GESTURE_DIRECTION_DOWN; }
-                else if (mouse_report.x < 0) { gesture_dir = GESTURE_DIRECTION_UP; }
-                break;
-            case GESTURE_TYPE_NONE:
-                gesture_dir = GESTURE_DIRECTION_NONE;
-                break;
-        }
-        switch (gesture_dir)
-        {
-            case GESTURE_DIRECTION_UP:
-                if (!s_sent_gesture)
-                {
-                    SEND_STRING(SS_LGUI(SS_TAP(X_UP)));
-                    s_sent_gesture_timestamp = timer_read();
-                    s_sent_gesture = true;
-                }
-                break;
-            case GESTURE_DIRECTION_DOWN:
-                if (!s_sent_gesture)
-                {
-                    SEND_STRING(SS_LGUI(SS_TAP(X_DOWN)));
-                    s_sent_gesture_timestamp = timer_read();
-                    s_sent_gesture = true;
-                }
-                break;
-            case GESTURE_DIRECTION_LEFT:
-                if (!s_sent_gesture)
-                {
-                    SEND_STRING(SS_LGUI(SS_TAP(X_LEFT)));
-                    s_sent_gesture_timestamp = timer_read();
-                    s_sent_gesture = true;
-                }
-                break;
-            case GESTURE_DIRECTION_RIGHT:
-                if (!s_sent_gesture)
-                {
-                    SEND_STRING(SS_LGUI(SS_TAP(X_RIGHT)));
-                    s_sent_gesture_timestamp = timer_read();
-                    s_sent_gesture = true;
-                }
-                break;
-            case GESTURE_DIRECTION_NONE:
-                // placeholder
-                break;
-        }
+        case GESTURE_DIRECTION_UP:
+            if (!s_sent_gesture)
+            {
+                SEND_STRING(SS_LGUI(SS_TAP(X_UP)));
+                s_sent_gesture_timestamp = timer_read();
+                s_sent_gesture = true;
+            }
+            break;
+        case GESTURE_DIRECTION_DOWN:
+            if (!s_sent_gesture)
+            {
+                SEND_STRING(SS_LGUI(SS_TAP(X_DOWN)));
+                s_sent_gesture_timestamp = timer_read();
+                s_sent_gesture = true;
+            }
+            break;
+        case GESTURE_DIRECTION_LEFT:
+            if (!s_sent_gesture)
+            {
+                SEND_STRING(SS_LGUI(SS_TAP(X_LEFT)));
+                s_sent_gesture_timestamp = timer_read();
+                s_sent_gesture = true;
+            }
+            break;
+        case GESTURE_DIRECTION_RIGHT:
+            if (!s_sent_gesture)
+            {
+                SEND_STRING(SS_LGUI(SS_TAP(X_RIGHT)));
+                s_sent_gesture_timestamp = timer_read();
+                s_sent_gesture = true;
+            }
+            break;
+        case GESTURE_DIRECTION_NONE:
+            // placeholder
+            break;
+    }
+    if (s_gesture_data.pressed)
+    {
         mouse_report.x = 0;
         mouse_report.y = 0;
     }
-    else
+    if (s_rotate_scroll_dir)
     {
-        s_sent_gesture = false;
+        const int8_t temp = mouse_report.h;
+        mouse_report.h = mouse_report.v;
+        mouse_report.v = temp;
     }
     return mouse_report;
 }
