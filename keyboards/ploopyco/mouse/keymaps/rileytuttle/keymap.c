@@ -74,23 +74,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 static GestureData s_gesture_data;
 static bool s_sent_gesture = false;
 static uint16_t s_sent_gesture_timestamp = 0;
-static bool s_rotate_scroll_dir;
+// static bool s_rotate_scroll_dir;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case GESTURE_KEY:
             gesture_update_key_state(&s_gesture_data, record->event.pressed);
             break;
-        case LT(0, KC_BTN3):
-            if (!record->tap.count && record->event.pressed)
-            {
-                s_rotate_scroll_dir = true;
-            }
-            else
-            {
-                s_rotate_scroll_dir = false;
-            }
-            break;
+        // case LT(0, KC_BTN3):
+        //     if (!record->tap.count && record->event.pressed)
+        //     {
+        //         s_rotate_scroll_dir = true;
+        //     }
+        //     else
+        //     {
+        //         s_rotate_scroll_dir = false;
+        //     }
+        //     break;
     }
     return true;
 }
@@ -145,12 +145,12 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
         mouse_report.x = 0;
         mouse_report.y = 0;
     }
-    if (s_rotate_scroll_dir)
-    {
-        const int8_t temp = mouse_report.h;
-        mouse_report.h = mouse_report.v;
-        mouse_report.v = temp;
-    }
+    // if (s_rotate_scroll_dir)
+    // {
+    //     const int8_t temp = mouse_report.h;
+    //     mouse_report.h = mouse_report.v;
+    //     mouse_report.v = temp;
+    // }
     return mouse_report;
 }
 
