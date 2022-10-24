@@ -103,7 +103,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
 {
     // going to need a way to limit this to sending once per mouse stroke (something like mark the direction and then only use it once it goes back to zero)
     // or ignore everything after the first one until we reset to zero
-    if (timer_elapsed(s_sent_gesture_timestamp) > 2000)
+    if (timer_elapsed(s_sent_gesture_timestamp) > 1000)
     {
         s_sent_gesture = false;
     }
@@ -128,8 +128,8 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
         switch (gesture_type)
         {
             case GESTURE_TYPE_VERTICAL:
-                if (mouse_report.y > 0) { gesture_dir = GESTURE_DIRECTION_RIGHT; }
-                else if (mouse_report.y < 0) { gesture_dir = GESTURE_DIRECTION_LEFT; }
+                if (mouse_report.y > 0) { gesture_dir = GESTURE_DIRECTION_LEFT; }
+                else if (mouse_report.y < 0) { gesture_dir = GESTURE_DIRECTION_RIGHT; }
                 break;
             case GESTURE_TYPE_HORIZONTAL:
                 if (mouse_report.x > 0) { gesture_dir = GESTURE_DIRECTION_DOWN; }
@@ -145,29 +145,33 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
                 if (!s_sent_gesture)
                 {
                     SEND_STRING(SS_LGUI(SS_TAP(X_UP)));
+                    s_sent_gesture_timestamp = timer_read();
+                    s_sent_gesture = true;
                 }
-                s_sent_gesture = true;
                 break;
             case GESTURE_DIRECTION_DOWN:
                 if (!s_sent_gesture)
                 {
                     SEND_STRING(SS_LGUI(SS_TAP(X_DOWN)));
+                    s_sent_gesture_timestamp = timer_read();
+                    s_sent_gesture = true;
                 }
-                s_sent_gesture = true;
                 break;
             case GESTURE_DIRECTION_LEFT:
                 if (!s_sent_gesture)
                 {
                     SEND_STRING(SS_LGUI(SS_TAP(X_LEFT)));
+                    s_sent_gesture_timestamp = timer_read();
+                    s_sent_gesture = true;
                 }
-                s_sent_gesture = true;
                 break;
             case GESTURE_DIRECTION_RIGHT:
                 if (!s_sent_gesture)
                 {
                     SEND_STRING(SS_LGUI(SS_TAP(X_RIGHT)));
+                    s_sent_gesture_timestamp = timer_read();
+                    s_sent_gesture = true;
                 }
-                s_sent_gesture = true;
                 break;
             case GESTURE_DIRECTION_NONE:
                 // placeholder
@@ -181,4 +185,11 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
         s_sent_gesture = false;
     }
     return mouse_report;
+}
+
+void keyboard_post_init_user(void)
+{
+    debug_enable  = true;
+    debug_matrix  = true;
+    debug_mouse   = true;
 }
