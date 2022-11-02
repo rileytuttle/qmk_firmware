@@ -275,18 +275,20 @@ static TogglerData raise_hold_toggler_data;
 static TogglerData mouse_hold_toggler_data;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  static uint16_t prev_keycode = 0;
+  bool ret_val = true;
   switch (keycode) {
         case QWERTY:
           if (record->event.pressed) {
             set_single_persistent_default_layer(_QWERTY);
           }
-          return false;
+          ret_val = false;
           break;
         case GAMING:
           if (record->event.pressed) {
             set_single_persistent_default_layer(_GAMING);
           }
-          return false;
+          ret_val = false;
           break;
         case KC_LALT:
           if (record->event.pressed) {
@@ -305,10 +307,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             layer_off(_LOWER);
             update_tri_layer(_LOWER, _RAISE, _ADJUST);
           }
-          return false;
+          ret_val = false;
           break;
         case RAISE:
         {
+          if (prev_keycode != RAISE) { toggle_reset(&raise_hold_toggler_data); }
           const bool layer_hold_toggle = toggle_update(&raise_hold_toggler_data, record->event.pressed);
 
           if (record->event.pressed)
@@ -326,13 +329,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             update_tri_layer(_LOWER, _RAISE, _ADJUST);
           }
-          return false;
+          ret_val = false;
           break;
         }
         case MOUSE:
         {
+          if (prev_keycode != MOUSE) { toggle_reset(&mouse_hold_toggler_data); }
           const bool layer_hold_toggle = toggle_update(&mouse_hold_toggler_data, record->event.pressed);
-          // this is necessary because this function would normally return false
+          // this is necessary because this function would normally ret_val = false
           // but in order for music to work we need this to return true along with the
           // music_mask(keycode) -> process_music() function.
           // added this is_music_on condition but I don't know
@@ -348,7 +352,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               {
                 layer_off(_MOUSE);
               }
-              return false;
+              ret_val = false;
           }
           break;
         }
@@ -358,7 +362,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           } else {
             layer_off(_TMUX);
           }
-          return false;
+          ret_val = false;
           break;
         case RGBKEY:
           if (record->event.pressed) {
@@ -366,19 +370,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           } else {
             layer_off(_RGB);
           }
-          return false;
+          ret_val = false;
           break;
         case EXTRKTO:
           if (record->event.pressed) {
             SEND_STRING(SS_LCTL("t")SS_TAP(X_TAB));
           }
-          return false;
+          ret_val = false;
           break;
         case ESCSHEL:
           if (record->event.pressed) {
             SEND_STRING("~."SS_TAP(X_ENTER));
           }
-          return false;
+          ret_val = false;
           break;
         case PWORD:
           if (record->event.pressed) {
@@ -386,34 +390,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           } else {
             layer_off(_PWORD);
           }
-          return false;
+          ret_val = false;
           break;
         case WORKP:
           if (record->event.pressed) {
             SEND_STRING(WORK_PWORD);
           }
-          return false;
+          ret_val = false;
           break;
         case SSHP:
           if (record->event.pressed) {
             SEND_STRING(SSH_PPHRASE);
           }
-          return false;
+          ret_val = false;
           break;
         case HOMEP:
           if (record->event.pressed) {
             SEND_STRING(PERSONAL_PWORD);
           }
-          return false;
+          ret_val = false;
           break;
         case NAME:
           if (record->event.pressed) {
             SEND_STRING(FULL_NAME_NO_SPACE);
           }
-          return false;
+          ret_val = false;
           break;
     }
-    return true;
+    prev_keycode = keycode;
+    return ret_val;
 };
 
 bool muse_mode = false;

@@ -8,6 +8,12 @@ typedef struct {
   uint16_t timer;
 } TogglerData;
 
+void toggle_reset(TogglerData *data)
+{
+  data->prev = false;
+  data->toggle = false;
+  data->timer = 0;
+}
 
 /**
  * this toggler will toggle on with a quick double tap
