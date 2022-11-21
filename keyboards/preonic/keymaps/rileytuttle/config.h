@@ -21,7 +21,7 @@
 // #define STARTUP_SONG SONG(NO_SOUND)
 
 #    define DEFAULT_LAYER_SONGS \
-        { SONG(QWERTY_SOUND), SONG(COLEMAK_SOUND), SONG(DVORAK_SOUND) }
+        { SONG(QWERTY_SOUND), SONG(COLEMAK_SOUND) }
 #endif
 
 // #define MUSIC_MASK (keycode != KC_NO)

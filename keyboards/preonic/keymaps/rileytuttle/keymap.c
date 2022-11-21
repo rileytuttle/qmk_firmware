@@ -242,7 +242,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_ADJUST] = LAYOUT_preonic_grid( \
   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  \
   _______, RESET,   DEBUG,   RGB_TOG, RGB_MOD, RGB_VAI, _______, _______, _______, _______, PWORD,   _______, \
-  _______, _______, _______, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,  GAMING,  _______, _______, _______, \
+  _______, _______, _______, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, DF(_QWERTY), DF(_GAMING), _______, _______, _______, \
   _______, MUV_DE,  MUV_IN,  MU_TOG,  MU_MOD,  MI_ON,   MI_OFF,  CK_TOGG, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
 ),
@@ -278,18 +278,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   static uint16_t prev_keycode = 0;
   bool ret_val = true;
   switch (keycode) {
-        case QWERTY:
-          if (record->event.pressed) {
-            set_single_persistent_default_layer(_QWERTY);
-          }
-          ret_val = false;
-          break;
-        case GAMING:
-          if (record->event.pressed) {
-            set_single_persistent_default_layer(_GAMING);
-          }
-          ret_val = false;
-          break;
         case KC_LALT:
           if (record->event.pressed) {
             layer_on(_LALT);
@@ -420,6 +408,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     prev_keycode = keycode;
     return ret_val;
 };
+
+#ifdef AUDIO_ENABLE
+float tone_qwerty[][2]     = SONG(QWERTY_SOUND);
+float tone_gaming[][2]     = SONG(COLEMAK_SOUND);
+#endif
+
+layer_state_t default_layer_state_set_user(layer_state_t state) {
+    switch(state) {
+        case 1U << _QWERTY:
+            #ifdef AUDIO_ENABLE
+            PLAY_SONG(tone_qwerty);
+            #endif
+            break;
+        case 1U << _GAMING:
+            #ifdef AUDIO_ENABLE
+            PLAY_SONG(tone_gaming);
+            #endif
+            break;
+    }
+    return state;
+}
 
 bool muse_mode = false;
 uint8_t last_muse_note = 0;
