@@ -46,7 +46,7 @@ enum preonic_keycodes {
   WORKP,   // work password
   HOMEP,   // personal password
   SSHP,    // ssh passphrase
-  NAME,
+  NAME,    // type out full name
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
